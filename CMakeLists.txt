@@ -5,4 +5,8 @@ project(opencl_wrapper)
 
 add_executable(opencl_wrapper main.cpp opencl_wrapper.cpp)
 
-target_link_libraries(opencl_wrapper "-framework OpenCL")
+if(APPLE)
+    target_link_libraries(opencl_wrapper "-framework OpenCL")
+elseif(UNIX)
+    target_link_libraries(opencl_wrapper OpenCL)
+endif()

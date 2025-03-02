@@ -49,10 +49,8 @@ ocl::proque::proque(const char *source, cl_command_queue_properties flags) {
         throw cl_error(err);
     }
 
-    context = clCreateContextFromType(
-        (cl_context_properties[]){CL_CONTEXT_PLATFORM, (cl_context_properties)platform, 0},
-        CL_DEVICE_TYPE_GPU,
-        nullptr, nullptr, &err);
+    cl_context_properties props[] = {CL_CONTEXT_PLATFORM, (cl_context_properties)platform, 0};
+    context = clCreateContextFromType(props, CL_DEVICE_TYPE_GPU, nullptr, nullptr, &err);
     if (err != CL_SUCCESS) {
         throw cl_error(err);
     }

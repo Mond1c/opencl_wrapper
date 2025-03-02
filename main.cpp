@@ -1,6 +1,7 @@
 #include "opencl_wrapper.h"
 #include <iostream>
 #include <vector>
+#include <cmath>
 
 int main() {
     const char *source = R"(

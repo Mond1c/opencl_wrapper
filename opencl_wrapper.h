@@ -23,7 +23,7 @@ namespace ocl {
 
         ~proque();
 
-        proque(const char *source, cl_queue_flags flags = 0);
+        proque(const char *source, cl_command_queue_properties flags = 0);
 
         cl_mem create_buffer(size_t size, cl_mem_flags flags, void* data);
 

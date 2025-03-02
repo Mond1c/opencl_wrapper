@@ -41,7 +41,7 @@ ocl::proque::~proque() {
     }
 }
 
-ocl::proque::proque(const char *source, cl_queue_flags flags) {
+ocl::proque::proque(const char *source, cl_command_queue_properties flags) {
     cl_int err;
     cl_platform_id platform;
     err = clGetPlatformIDs(1, &platform, nullptr);

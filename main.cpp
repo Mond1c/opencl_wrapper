@@ -38,7 +38,7 @@ int main() {
 
     const float eps = 1e-6;
     for (int i = 0; i < N; i++) {
-        if (fabs(c[i] - (a[i] + b[i])) > eps) {
+        if (std::fabs(c[i] - (a[i] + b[i])) > eps) {
             std::cerr << "Error at index " << i << ": " << c[i] << " != " << a[i] << " + " << b[i] << std::endl;
             return 1;
         }

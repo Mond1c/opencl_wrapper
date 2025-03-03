@@ -30,17 +30,21 @@ namespace ocl {
         void create_kernel(const char *name);
 
         void set_arg(cl_uint index, const void *value, size_t size);
-
         void set_arg(cl_uint index, const void* value);
 
         void run_kernel(size_t work_size, size_t local_work_size = 0);
-
         double run_kernel_with_profiling(size_t work_size, size_t local_work_size = 0);
+
+        void run_kernel_nd(size_t dimensions, const size_t* global_work_size, const size_t* local_work_size = nullptr);
+        double run_kernel_nd_with_profiling(size_t dimensions, const size_t* global_work_size, const size_t* local_work_size = nullptr);
 
         void finish();
 
         void read_buffer(cl_mem buffer, size_t size, void* ptr);
 
         void write_buffer(cl_mem buffer, size_t size, const void* ptr);
+
+        std::string get_device_name();
+        size_t get_max_work_group_size();
     };
 }

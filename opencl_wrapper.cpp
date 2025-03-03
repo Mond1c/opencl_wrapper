@@ -144,6 +144,37 @@ double ocl::proque::run_kernel_with_profiling(size_t work_size, size_t local_wor
     return execution_time;
 }
 
+void ocl::proque::run_kernel_nd(size_t dimensions, const size_t* global_work_size, const size_t* local_work_size) {
+    cl_int err = clEnqueueNDRangeKernel(queue, kernel, dimensions, nullptr, global_work_size, local_work_size, 0, nullptr, nullptr);
+    if (err != CL_SUCCESS) {
+        throw cl_error(err);
+    }
+}
+
+double ocl::proque::run_kernel_nd_with_profiling(size_t dimensions, const size_t* global_work_size, const size_t* local_work_size) {
+    cl_event kernel_event;
+    cl_int err = clEnqueueNDRangeKernel(queue, kernel, dimensions, nullptr, global_work_size, local_work_size, 0, nullptr, &kernel_event);
+    if (err != CL_SUCCESS) {
+        throw cl_error(err);
+    }
+
+    finish();
+    
+    cl_ulong start_time, end_time;
+
+    err = clGetEventProfilingInfo(kernel_event, CL_PROFILING_COMMAND_START, sizeof(start_time), &start_time, nullptr);
+    if (err != CL_SUCCESS) {
+        throw cl_error(err);
+    }
+    err = clGetEventProfilingInfo(kernel_event, CL_PROFILING_COMMAND_END, sizeof(end_time), &end_time, nullptr);
+    if (err != CL_SUCCESS) {
+        throw cl_error(err);
+    }
+    clReleaseEvent(kernel_event);
+    double execution_time = (end_time - start_time) * 1e-6;
+    return execution_time;
+}
+
 void ocl::proque::finish() {
     cl_int err = clFinish(queue);
     if (err != CL_SUCCESS) {
@@ -163,4 +194,33 @@ void ocl::proque::write_buffer(cl_mem buffer, size_t size, const void *ptr) {
     if (err != CL_SUCCESS) {
         throw cl_error(err);
     }
+}
+
+std::string ocl::proque::get_device_name() {
+    size_t name_size;
+    cl_int err = clGetDeviceInfo(device, CL_DEVICE_NAME, 0, nullptr, &name_size);
+    if (err != CL_SUCCESS) {
+        throw cl_error(err);
+    }
+
+    std::string name(name_size, '\0');
+    err = clGetDeviceInfo(device, CL_DEVICE_NAME, name_size, &name[0], nullptr);
+    if (err != CL_SUCCESS) {
+        throw cl_error(err);
+    }
+
+    if (!name.empty() && name.back() == '\0') {
+        name.pop_back();
+    }
+
+    return name;
+}
+
+size_t ocl::proque::get_max_work_group_size() {
+    size_t work_group_size;
+    cl_int err = clGetKernelWorkGroupInfo(kernel, device, CL_KERNEL_WORK_GROUP_SIZE, sizeof(work_group_size), &work_group_size, nullptr);
+    if (err != CL_SUCCESS) {
+        throw cl_error(err);
+    }
+    return work_group_size;
 }
